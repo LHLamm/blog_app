@@ -1,6 +1,6 @@
 module Articles
   class SearchQuery
-    EAGER_LOAD_ASSOCIATIONS = [:author].freeze
+    EAGER_LOAD_ASSOCIATIONS = [ :author ].freeze
 
     def initialize(relation = Article.all)
       @relation = relation

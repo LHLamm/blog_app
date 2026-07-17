@@ -20,7 +20,7 @@ RSpec.describe Articles::PublishService do
         expect { described_class.new(article: article).call }
           .to change(ActionLog, :count).by(1)
 
-        log = ActionLog.strict_loading(false).last 
+        log = ActionLog.strict_loading(false).last
         expect(log.loggable).to eq(article)
         expect(log.action).to eq("publish")
       end
