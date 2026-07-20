@@ -54,6 +54,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "rspec-rails"
+  gem "factory_bot_rails"
 end
 
 group :development do
@@ -66,4 +67,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "simplecov", require: false
+
+
+  gem "db-query-matchers"
 end

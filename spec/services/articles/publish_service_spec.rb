@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Articles::PublishService do
-  let!(:author) { User.create!(name: "Alice") }
-  let!(:article) { Article.create!(title: "Bài viết test", body: "...", status: :draft, author: author) }
+  let!(:author) { create(:user) }
+  let!(:article) { create(:article, title: "Bài viết test", status: :draft, author: author) }
 
   describe "#call" do
     context "khi cả 3 bước đều thành công" do
@@ -59,7 +59,7 @@ RSpec.describe Articles::PublishService do
     end
 
     context "khi article đã published từ trước" do
-      let!(:article) { Article.create!(title: "Bài viết test", body: "...", status: :published, author: author) }
+      let!(:article) { create(:article, :published, title: "Bài viết test", author: author) }
 
       it "raise InvalidTransitionError ngay bước 1, counter không đổi" do
         result = nil

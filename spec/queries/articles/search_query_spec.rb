@@ -1,35 +1,20 @@
 require "rails_helper"
 
 RSpec.describe Articles::SearchQuery do
-  let!(:author_a) { User.create!(name: "Alice") }
-  let!(:author_b) { User.create!(name: "Bob") }
+  let!(:author_a) { create(:user) }
+  let!(:author_b) { create(:user) }
 
   let!(:published_a1) do
-    Article.create!(title: "Học Rails 8 từ đầu", body: "Nội dung A1", status: :published, author: author_a)
+    create(:article, :published, title: "Học Rails 8 từ đầu", body: "Nội dung A1", author: author_a)
   end
   let!(:draft_b1) do
-    Article.create!(title: "Ruby cơ bản", body: "Nội dung B1", status: :draft, author: author_b)
+    create(:article, title: "Ruby cơ bản", body: "Nội dung B1", status: :draft, author: author_b)
   end
   let!(:published_a2) do
-    Article.create!(title: "Rails nâng cao: Query Object", body: "Nội dung A2", status: :published, author: author_a)
+    create(:article, :published, title: "Rails nâng cao: Query Object", body: "Nội dung A2", author: author_a)
   end
 
   subject(:query) { described_class.new }
-
-  # Đếm số câu SQL thực thi thật sự (bỏ qua SCHEMA/TRANSACTION), thay vì chỉ
-  # verify "không raise error" như comment mentor chỉ ra.
-  def count_queries
-    count = 0
-    counter = lambda do |*, payload|
-      count += 1 unless payload[:name].in?(%w[SCHEMA TRANSACTION])
-    end
-
-    ActiveSupport::Notifications.subscribed(counter, "sql.active_record") do
-      yield
-    end
-
-    count
-  end
 
   describe "#call" do
     it "lọc theo status" do
@@ -60,11 +45,9 @@ RSpec.describe Articles::SearchQuery do
     it "không phát sinh N+1 khi truy cập author (được bảo vệ bởi strict_loading)" do
       results = query.call(status: "published")
 
-      query_count = count_queries do
+      expect {
         results.each { |article| article.author.name }
-      end
-
-      expect(query_count).to be <= 2
+      }.to make_database_queries(count: 1..2) # 1 cho articles, 1 cho authors
     end
 
     it "raise StrictLoadingViolationError nếu N+1 thật sự xảy ra (không qua includes)" do
