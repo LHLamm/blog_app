@@ -129,16 +129,6 @@ jobs:
           path: coverage/
           if-no-files-found: ignore
 
-      # Uncomment block dưới khi đã setup Codecov (free cho public repo)
-      # Tạo account tại https://codecov.io, lấy CODECOV_TOKEN từ repo settings
-      # rồi add vào GitHub Secrets với tên CODECOV_TOKEN
-      #
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v4
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     fail_ci_if_error: true
-
   system-test:
     runs-on: ubuntu-latest
 

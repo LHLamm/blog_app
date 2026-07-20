@@ -30,7 +30,7 @@ module Articles
       Result.new(article: article)
     rescue StandardError => e
       Rails.logger.error(
-        "[Articles::PublishService] Publish thất bại cho article##{article.id}: #{e.class}: #{e.message}"
+        "[Articles::PublishService] Publish thất bại cho article#{article.id}: #{e.class}: #{e.message}"
       )
       Result.new(article: article, error: e)
     end
