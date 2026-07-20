@@ -22,7 +22,7 @@ RSpec.describe Articles::PublishService do
 
         log = ActionLog.strict_loading(false).last
         expect(log.loggable).to eq(article)
-        expect(log.action).to eq("publish")
+        expect(log.action_name).to eq("publish")
       end
 
       it "trả về Result#success? = true" do
@@ -59,7 +59,7 @@ RSpec.describe Articles::PublishService do
     end
 
     context "khi article đã published từ trước" do
-      before { article.update!(status: :published) }
+      let!(:article) { Article.create!(title: "Bài viết test", body: "...", status: :published, author: author) }
 
       it "raise InvalidTransitionError ngay bước 1, counter không đổi" do
         result = nil

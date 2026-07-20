@@ -3,6 +3,8 @@ module Articles
     EAGER_LOAD_ASSOCIATIONS = [ :author ].freeze
 
     def initialize(relation = Article.all)
+      raise ArgumentError, "Expected ActiveRecord::Relation" unless relation.is_a?(ActiveRecord::Relation)
+
       @relation = relation
     end
 
@@ -11,6 +13,7 @@ module Articles
         .then { |rel| filter_by_status(rel, status) }
         .then { |rel| filter_by_author(rel, author_id) }
         .then { |rel| filter_by_keyword(rel, keyword) }
+        .then { |rel| rel.order(created_at: :desc) }
         .includes(*EAGER_LOAD_ASSOCIATIONS)
     end
 

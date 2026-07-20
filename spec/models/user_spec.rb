@@ -29,14 +29,8 @@ RSpec.describe User, type: :model do
     let!(:other_author) { User.create!(name: "Bob") }
     let!(:article) { Article.create!(title: "Bài viết", body: "...", author: user) }
     let!(:other_article) { Article.create!(title: "Bài viết của Bob", body: "...", author: other_author) }
-
-    # Log gắn với chính article của user -> khi user bị destroy, article này cũng bị destroy
-    # (dependent: :destroy), kéo theo log này cũng bị destroy luôn (Article#action_logs dependent: :destroy).
-    let!(:own_article_log) { ActionLog.create!(loggable: article, user: user, action: "publish") }
-
-    # Log gắn với article của người khác (loggable không bị xoá cùng user) -> đây mới là ca test
-    # đúng nghĩa cho User#action_logs dependent: :nullify, vì log này độc lập với vòng đời article.
-    let!(:moderation_log) { ActionLog.create!(loggable: other_article, user: user, action: "flag") }
+    let!(:own_article_log) { ActionLog.create!(loggable: article, user: user, action_name: "publish") }
+    let!(:moderation_log) { ActionLog.create!(loggable: other_article, user: user, action_name: "flag") }
 
     it "destroy user thì destroy luôn các article của user đó (dependent: :destroy)" do
       expect { user.destroy }.to change(Article, :count).by(-1)

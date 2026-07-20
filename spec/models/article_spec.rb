@@ -5,14 +5,21 @@ RSpec.describe Article, type: :model do
 
   describe "validations" do
     it "không hợp lệ nếu thiếu title" do
-      article = Article.new(title: nil, author: author)
+      article = Article.new(title: nil, body: "...", author: author)
 
       expect(article).not_to be_valid
       expect(article.errors[:title]).to include("can't be blank")
     end
 
-    it "hợp lệ khi có title và author" do
-      article = Article.new(title: "Bài viết", author: author)
+    it "không hợp lệ nếu thiếu body" do
+      article = Article.new(title: "Bài viết", body: nil, author: author)
+
+      expect(article).not_to be_valid
+      expect(article.errors[:body]).to include("can't be blank")
+    end
+
+    it "hợp lệ khi có title, body và author" do
+      article = Article.new(title: "Bài viết", body: "...", author: author)
 
       expect(article).to be_valid
     end
@@ -20,14 +27,14 @@ RSpec.describe Article, type: :model do
 
   describe "enum :status" do
     it "mặc định là draft khi tạo mới" do
-      article = Article.create!(title: "Bài viết", author: author)
+      article = Article.create!(title: "Bài viết", body: "...", author: author)
 
       expect(article.status).to eq("draft")
       expect(article.draft?).to be(true)
     end
 
     it "cho phép chuyển sang published / archived" do
-      article = Article.create!(title: "Bài viết", author: author, status: :published)
+      article = Article.create!(title: "Bài viết", body: "...", author: author, status: :published)
       expect(article.published?).to be(true)
 
       article.update!(status: :archived)
@@ -35,7 +42,7 @@ RSpec.describe Article, type: :model do
     end
 
     it "không hợp lệ (validation error) khi gán giá trị status không tồn tại, không raise ArgumentError" do
-      article = Article.create!(title: "Bài viết", author: author)
+      article = Article.create!(title: "Bài viết", body: "...", author: author)
 
       expect { article.status = "khong_ton_tai" }.not_to raise_error
 
@@ -46,15 +53,15 @@ RSpec.describe Article, type: :model do
 
   describe "associations" do
     it "belongs_to :author ánh xạ tới User qua user_id" do
-      article = Article.create!(title: "Bài viết", author: author)
+      article = Article.create!(title: "Bài viết", body: "...", author: author)
 
       expect(article.author).to eq(author)
       expect(article.user_id).to eq(author.id)
     end
 
     it "destroy article thì destroy luôn action_logs liên quan (dependent: :destroy)" do
-      article = Article.create!(title: "Bài viết", author: author)
-      log = ActionLog.create!(loggable: article, user: author, action: "publish")
+      article = Article.create!(title: "Bài viết", body: "...", author: author)
+      log = ActionLog.create!(loggable: article, user: author, action_name: "publish")
 
       expect { article.destroy }.to change(ActionLog, :count).by(-1)
       expect(ActionLog.exists?(log.id)).to be(false)

@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_16_035533) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_20_062159) do
   create_table "action_logs", force: :cascade do |t|
-    t.string "action"
+    t.string "action_name"
     t.datetime "created_at", null: false
     t.integer "loggable_id", null: false
     t.string "loggable_type", null: false
@@ -27,12 +27,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_16_035533) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "published_at"
-    t.string "status", default: "draft", null: false
+    t.integer "status", default: 10, null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["status"], name: "index_articles_on_status"
-    t.index ["user_id"], name: "index_articles_on_user_id"
+    t.index ["user_id", "status"], name: "index_articles_on_user_id_and_status"
   end
 
   create_table "users", force: :cascade do |t|

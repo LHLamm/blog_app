@@ -21,7 +21,7 @@ module Articles
     end
 
     def call
-      ActiveRecord::Base.transaction(requires_new: true) do
+      ActiveRecord::Base.transaction do
         change_status!
         increment_author_counter!
         write_log!
@@ -48,14 +48,14 @@ module Articles
     end
 
     def increment_author_counter!
-      article.author.increment!(:published_articles_count)
+      User.update_counters(article.user_id, published_articles_count: 1)
     end
 
     def write_log!
       ActionLog.create!(
         loggable: article,
         user: actor,
-        action: "publish",
+        action_name: "publish",
         metadata: { status: article.status }
       )
     end
