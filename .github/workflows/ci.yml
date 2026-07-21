@@ -69,7 +69,7 @@ jobs:
         run: bin/rubocop -f github -f progress
 
       - name: Upload RuboCop report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: rubocop-report
@@ -122,7 +122,7 @@ jobs:
         run: bin/rails db:test:prepare && bundle exec rspec --format documentation --format progress
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage-report
@@ -151,7 +151,7 @@ jobs:
         run: bin/rails db:test:prepare && bin/rails test:system
 
       - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: screenshots
