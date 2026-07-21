@@ -3,11 +3,12 @@ namespace :articles do
   task backfill_status: :environment do
     status_map = { "draft" => 10, "published" => 20, "archived" => 30 }
 
+    article_table = Class.new(ActiveRecord::Base) do
+      self.table_name = "articles"
+    end
+
     status_map.each do |string_value, int_value|
-      sql = ActiveRecord::Base.sanitize_sql_array(
-        [ "UPDATE articles SET status_tmp = ? WHERE status = ?", int_value, string_value ]
-      )
-      updated = ActiveRecord::Base.connection.update(sql)
+      updated = article_table.where(status: string_value).update_all(status_tmp: int_value)
       puts "status='#{string_value}' -> status_tmp=#{int_value}: đã cập nhật #{updated} bản ghi"
     end
 
