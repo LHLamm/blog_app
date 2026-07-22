@@ -1,0 +1,5 @@
+<p>Hi <%= @user.name %>,</p>
+
+<p>Please confirm your email address to finish setting up your account.</p>
+
+<p><%= link_to "Verify my email", verify_email_url(@token) %></p>

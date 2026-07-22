@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_20_062159) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_22_034608) do
   create_table "action_logs", force: :cascade do |t|
     t.string "action_name"
     t.datetime "created_at", null: false
@@ -36,13 +36,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_20_062159) do
     t.index ["user_id", "status"], name: "index_articles_on_user_id_and_status"
   end
 
+  create_table "user_profiles", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "phone_number"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_user_profiles_on_user_id", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "email", default: "", null: false
+    t.datetime "email_verified_at"
     t.string "name", null: false
+    t.string "password_digest", default: "", null: false
     t.integer "published_articles_count", default: 0, null: false
+    t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["role"], name: "index_users_on_role"
   end
 
   add_foreign_key "action_logs", "users"
   add_foreign_key "articles", "users"
+  add_foreign_key "user_profiles", "users"
 end
