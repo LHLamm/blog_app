@@ -1,0 +1,30 @@
+<% content_for :title, "Articles" %>
+
+<div class="page-header">
+  <h1>Articles</h1>
+</div>
+
+<%= form_with url: articles_path, method: :get, local: true, class: "filters" do |f| %>
+  <%= f.select :status, options_for_select(Article.statuses.keys.map { |s| [s.capitalize, s] }, params[:status]), { include_blank: "All statuses" } %>
+  <%= f.select :author_id, options_for_select(@authors.map { |u| [u.name, u.id] }, params[:author_id]), { include_blank: "All authors" } %>
+  <%= f.text_field :keyword, value: params[:keyword], placeholder: "Search title or body..." %>
+  <%= f.submit "Filter", class: "btn btn--primary" %>
+<% end %>
+
+<% if @articles.any? %>
+  <div class="card-list">
+    <% @articles.each do |raw_article| %>
+      <% article = ArticlePresenter.new(raw_article, current_user: current_user, view_context: self) %>
+      <div class="card">
+        <h2 class="card__title"><%= link_to article.title, article_path(article) %></h2>
+        <div class="card__meta">
+          <span class="badge badge--<%= article.status %>"><%= article.status %></span>
+          <span>by <%= article.author_display %></span>
+          <span>· <%= article.formatted_created_at %></span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="empty-state">No articles match the current filters.</div>
+<% end %>

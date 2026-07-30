@@ -1,0 +1,22 @@
+<div class="article-header">
+  <span class="badge badge--<%= @article.status %>"><%= @article.status %></span>
+  <h1><%= @article.title %></h1>
+  <div class="card__meta">
+    <span>by <%= @article.author.name %></span>
+    <% if @article.published_at %>
+      <span>· published at <%= @article.published_at.strftime("%b %d, %Y %H:%M") %></span>
+    <% end %>
+  </div>
+</div>
+
+<% if policy(@article).edit? %>
+  <%= link_to "Edit article", edit_article_path(@article), class: "btn btn--ghost" %>
+<% end %>
+
+<% if !@article.published? && policy(@article).publish? %>
+  <%= button_to "Publish article", publish_article_path(@article), method: :post, class: "btn btn--primary" %>
+<% end %>
+
+<div class="article-body"><%= @article.body %></div>
+
+<p><%= link_to "← Back to articles", articles_path, class: "btn btn--ghost" %></p>

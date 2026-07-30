@@ -1,10 +1,166 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-border: #e3e5e8;
+  --color-text: #1c1f24;
+  --color-muted: #6b7280;
+  --color-primary: #2fe2eb;
+  --color-primary-dark: #2457bd;
+  --color-success-bg: #e6f6ec;
+  --color-success-text: #157347;
+  --color-alert-bg: #fdecec;
+  --color-alert-text: #b3261e;
+  --color-draft-bg: #f1f2f4;
+  --color-draft-text: #4b5563;
+  --color-archived-bg: #f4e8d0;
+  --color-archived-text: #92660b;
+  --color-on-primary: #ffffff;
+  --focus-ring-color: #2457bd;
+  --radius: 10px;
+}
+
+html {
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+button, input, textarea {
+  font-family: inherit;
+  font-size: 100%;
+  color: inherit;
+  margin: 0;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+.navbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.navbar__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navbar__brand { font-weight: 700; font-size: 1.15rem; color: var(--color-text); text-decoration: none; }
+.navbar__links { display: flex; align-items: center; gap: 18px; }
+.navbar__links a { color: var(--color-muted); text-decoration: none; font-size: 0.95rem; }
+.navbar__links a:hover { color: var(--color-text); }
+
+.container { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
+
+.flash { padding: 12px 16px; border-radius: var(--radius); margin-bottom: 18px; font-size: 0.9rem; }
+.flash--notice { background: var(--color-success-bg); color: var(--color-success-text); }
+.flash--alert { background: var(--color-alert-bg); color: var(--color-alert-text); }
+
+.page-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+.page-header h1 { font-size: 1.5rem; margin: 0; }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 22px;
+}
+.filters select, .filters input[type="text"] {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: var(--color-surface);
+}
+.filters input[type="text"] { flex: 1; min-width: 180px; }
+
+.card-list { display: flex; flex-direction: column; gap: 12px; }
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.card__title { font-size: 1.05rem; margin: 0 0 6px; }
+.card__title a { color: var(--color-text); text-decoration: none; }
+.card__title a:hover { color: var(--color-primary); }
+.card__meta { font-size: 0.85rem; color: var(--color-muted); display: flex; gap: 10px; align-items: center; }
+
+.badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+.badge--draft { background: var(--color-draft-bg); color: var(--color-draft-text); }
+.badge--published { background: var(--color-success-bg); color: var(--color-success-text); }
+.badge--archived { background: var(--color-archived-bg); color: var(--color-archived-text); }
+
+.btn {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn--primary { background: var(--color-primary); color: var(--color-on-primary); }
+.btn--primary:hover { background: var(--color-primary-dark); }
+.btn--ghost { background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary); }
+
+.empty-state { text-align: center; padding: 40px 0; color: var(--color-muted); }
+
+.form-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 480px;
+}
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+.field-error { color: var(--color-alert-text); font-size: 0.8rem; margin-top: 4px; }
+.error-summary {
+  background: var(--color-alert-bg);
+  color: var(--color-alert-text);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+}
+
+.article-body { line-height: 1.7; white-space: pre-wrap; }
+.article-header { margin-bottom: 20px; }
+.article-header h1 { margin: 0 0 8px; }

@@ -1,0 +1,34 @@
+<div class="page-header">
+  <h1><%= @user.name %></h1>
+</div>
+
+<div class="form-card">
+  <div class="form-group">
+    <label>Email</label>
+    <p>
+      <%= @user.email %>
+      <% if @user.email_verified? %>
+        <span class="badge badge--published">Verified</span>
+      <% else %>
+        <span class="badge badge--draft">Not verified</span>
+      <% end %>
+    </p>
+  </div>
+
+  <div class="form-group">
+    <label>Phone number</label>
+    <p><%= @user.user_profile&.phone_number.presence || "Not provided" %></p>
+  </div>
+
+  <div class="form-group">
+    <label>Joined</label>
+    <p><%= @user.created_at.strftime("%b %d, %Y") %></p>
+  </div>
+
+  <div class="form-group">
+    <label>Published articles</label>
+    <p><%= @user.published_articles_count %></p>
+  </div>
+</div>
+
+<p><%= link_to "← Back to articles", articles_path, class: "btn btn--ghost" %></p>
