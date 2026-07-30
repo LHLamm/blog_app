@@ -1,14 +1,22 @@
 class ArticlesController < ApplicationController
+  after_action :verify_policy_scoped, only: :index
+
   before_action :require_login, only: [ :new, :create, :edit, :update, :publish ]
   before_action :set_article, only: [ :show, :edit, :update, :publish ]
 
   def index
-    @articles = Articles::SearchQuery.new(policy_scope(Article)).call(
+    authorize Article, :index?
+    scoped_articles = policy_scope(Article)
+    @articles = Articles::SearchQuery.new(scoped_articles).call(
       status: params[:status],
       author_id: params[:author_id],
       keyword: params[:keyword]
     )
-    @authors = User.order(:name)
+    @authors =
+      User.joins(:articles)
+          .merge(scoped_articles)
+          .distinct
+          .order(:name)
   end
 
   def show
@@ -60,7 +68,8 @@ class ArticlesController < ApplicationController
   private
 
   def set_article
-    @article = Article.includes(:author).find(params[:id])
+    @article = Article.find_by(id: params[:id])
+    redirect_to articles_path, alert: "Article not found." unless @article
   end
 
   def article_params

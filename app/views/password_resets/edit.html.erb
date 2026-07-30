@@ -4,7 +4,7 @@
 
 <div class="form-card">
   <% if @user %>
-    <%= form_with url: password_reset_path(params[:token]), method: :patch, local: true do |f| %>
+    <%= form_with url: password_reset_path(params[:token]), method: :patch, local: true, scope: :user do |f| %>
       <% if @user.errors.any? %>
         <div class="error-summary">
           <strong><%= pluralize(@user.errors.count, "error") %> prevented this from being saved:</strong>

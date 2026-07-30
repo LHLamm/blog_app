@@ -12,6 +12,7 @@ class RegistrationForm
   validates :name, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }
+  validates :password_confirmation, presence: true
   validates :phone_number, format: { with: /\A[0-9]{9,11}\z/ }, allow_blank: true
 
   attr_reader :user
@@ -19,10 +20,12 @@ class RegistrationForm
   def save
     return false if invalid?
 
+    normalized_email = email.to_s.strip.downcase
+
     ActiveRecord::Base.transaction do
       @user = User.create!(
         name: name,
-        email: email,
+        email: normalized_email,
         password: password,
         password_confirmation: password_confirmation
       )

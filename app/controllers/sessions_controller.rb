@@ -1,13 +1,15 @@
 class SessionsController < ApplicationController
+  skip_after_action :verify_authorized
+
   def new
   end
 
   def create
-    user = User.find_by(email: params[:email]&.downcase)
+    user = User.find_by(email: params[:email]&.to_s.strip.downcase)
 
     if user&.authenticate(params[:password])
-      session[:user_id] = user.id
-      redirect_to articles_path, notice: "Logged in successfully."
+      log_in(user)
+      redirect_to return_location, notice: "Logged in successfully."
     else
       flash.now[:alert] = "Invalid email or password."
       render :new, status: :unprocessable_entity
@@ -15,7 +17,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:user_id] = nil
+    log_out
     redirect_to articles_path, notice: "Logged out."
   end
 end

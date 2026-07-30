@@ -37,10 +37,17 @@ RSpec.describe RegistrationForm do
       expect(form.errors[:phone_number]).to be_present
     end
 
-    it "hợp lệ khi có đủ name, email, password (phone_number optional)" do
-      form = described_class.new(name: "Nguyễn Văn A", email: "a@example.com", password: "123456")
+    it "hợp lệ khi có đủ name, email, password, password_confirmation (phone_number optional)" do
+      form = described_class.new(name: "Nguyễn Văn A", email: "a@example.com", password: "123456", password_confirmation: "123456")
 
       expect(form).to be_valid
+    end
+
+    it "không hợp lệ nếu thiếu password_confirmation" do
+      form = described_class.new(name: "Nguyễn Văn A", email: "a@example.com", password: "123456")
+
+      expect(form).not_to be_valid
+      expect(form.errors[:password_confirmation]).to be_present
     end
   end
 
@@ -93,7 +100,7 @@ RSpec.describe RegistrationForm do
     context "khi email đã tồn tại (uniqueness ở tầng DB)" do
       it "trả về false, không tạo user trùng email" do
         create(:user, email: "trung@example.com")
-        form = described_class.new(name: "Người mới", email: "trung@example.com", password: "123456")
+        form = described_class.new(name: "Người mới", email: "trung@example.com", password: "123456", password_confirmation: "123456")
 
         expect { form.save }.not_to change(User, :count)
         expect(form.save).to be(false)
@@ -107,7 +114,7 @@ RSpec.describe RegistrationForm do
           ActiveRecord::RecordInvalid.new(UserProfile.new)
         )
 
-        form = described_class.new(name: "Trần Thị B", email: "b@example.com", password: "123456")
+        form = described_class.new(name: "Trần Thị B", email: "b@example.com", password: "123456", password_confirmation: "123456")
 
         expect { form.save }.not_to change(User, :count)
       end

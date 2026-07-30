@@ -1,4 +1,8 @@
 class PasswordResetsController < ApplicationController
+  skip_after_action :verify_authorized
+
+  before_action :set_user_from_reset_token, only: %i[edit update]
+
   def new
   end
 
@@ -10,14 +14,9 @@ class PasswordResetsController < ApplicationController
   end
 
   def edit
-    @user = User.find_by_token_for(:password_reset, params[:token])
-    redirect_to new_password_reset_path, alert: "That reset link is invalid or has expired." unless @user
   end
 
   def update
-    @user = User.find_by_token_for(:password_reset, params[:token])
-    return redirect_to new_password_reset_path, alert: "That reset link is invalid or has expired." unless @user
-
     if @user.update(password_params)
       redirect_to login_path, notice: "Password updated. Please log in."
     else
@@ -27,7 +26,14 @@ class PasswordResetsController < ApplicationController
 
   private
 
+  def set_user_from_reset_token
+    @user = User.find_by_token_for(:password_reset, params[:token])
+    return if @user.present?
+
+    redirect_to new_password_reset_path, alert: "That reset link is invalid or has expired."
+  end
+
   def password_params
-    params.permit(:password, :password_confirmation)
+    params.require(:user).permit(:password, :password_confirmation)
   end
 end
