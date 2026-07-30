@@ -18,6 +18,8 @@
   --color-archived-text: #92660b;
   --color-on-primary: #ffffff;
   --focus-ring-color: #2457bd;
+  --color-danger: #dc2626;
+  --color-danger-bg: #fdecec;
   --radius: 10px;
 }
 
@@ -76,9 +78,33 @@ img {
 
 .container { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
 
-.flash { padding: 12px 16px; border-radius: var(--radius); margin-bottom: 18px; font-size: 0.9rem; }
+.flash {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+  opacity: 1;
+  transition: opacity 0.4s ease-out;
+}
+.flash--fade-out { opacity: 0; }
 .flash--notice { background: var(--color-success-bg); color: var(--color-success-text); }
 .flash--alert { background: var(--color-alert-bg); color: var(--color-alert-text); }
+
+.form-hint { font-size: 0.8rem; color: #6b7280; margin-top: 6px; }
+
+.article-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.article-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius);
+}
+.article-row__author { color: var(--color-muted); font-size: 0.85rem; }
+.article-row__status { font-size: 0.75rem; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: #f3f4f6; }
+.article-row__time { margin-left: auto; color: #9ca3af; font-size: 0.8rem; }
+.article-row__delete { padding: 4px 10px; font-size: 0.8rem; }
 
 .page-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
 .page-header h1 { font-size: 1.5rem; margin: 0; }
@@ -132,6 +158,8 @@ img {
 .btn--primary { background: var(--color-primary); color: var(--color-on-primary); }
 .btn--primary:hover { background: var(--color-primary-dark); }
 .btn--ghost { background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary); }
+.btn--danger { background: transparent; color: var(--color-danger); border: 1px solid var(--color-danger); }
+.btn--danger:hover { background: var(--color-danger-bg); }
 
 .empty-state { text-align: center; padding: 40px 0; color: var(--color-muted); }
 

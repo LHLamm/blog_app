@@ -12,4 +12,11 @@ class UserMailer < ApplicationMailer
 
     mail(to: @user.email, subject: "Confirm your email")
   end
+
+  def article_published(article)
+    @article = article
+    @user = article.author
+
+    mail(to: @user.email, subject: "Your article \"#{@article.title}\" is now published")
+  end
 end

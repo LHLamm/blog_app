@@ -28,6 +28,10 @@ class ArticlePolicy < ApplicationPolicy
     admin? || owner?
   end
 
+  def destroy?
+    admin?
+  end
+
   class Scope < Scope
     def resolve
       return scope.all if user&.admin?

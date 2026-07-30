@@ -1,2 +1,26 @@
 #!/usr/bin/env ruby.exe
-exec "./bin/rails", "server", *ARGV
+# Chạy Rails server và Solid Queue worker song song.
+# Dùng bin/jobs_worker (không fork, không trap SIGQUIT) để chạy được cả trên Windows.
+
+require "English"
+
+pids = []
+
+trap("INT") do
+  pids.each do |pid|
+    begin
+      Process.kill("INT", pid)
+    rescue Errno::ESRCH
+      # process đã dừng rồi, bỏ qua
+    end
+  end
+  exit
+end
+
+puts "==> Starting Rails server..."
+pids << spawn("ruby", "bin/rails", "server", *ARGV)
+
+puts "==> Starting Solid Queue worker (bin/jobs_worker)..."
+pids << spawn("ruby", "bin/jobs_worker")
+
+Process.waitall

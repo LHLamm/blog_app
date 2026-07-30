@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# Chay Solid Queue Worker truc tiep, KHONG qua Supervisor.
+# Supervisor (dung boi bin/jobs) can fork() + trap SIGQUIT, khong co tren Windows.
+# Worker chay don tien trinh, khong fork, khong trap SIGQUIT -> chay duoc tren Windows.
+#
+# Dung: ruby bin/jobs_worker
+
+require_relative "../config/environment"
+
+puts "Starting Solid Queue worker (Windows-friendly, no supervisor)..."
+
+worker = SolidQueue::Worker.new(
+  queues: "*",
+  threads: 3,
+  polling_interval: 1
+)
+worker.start
+
+# Worker#start chỉ khởi động các thread polling nền và trả về ngay,
+# không tự block main thread. Nếu không giữ process sống ở đây,
+# Ruby sẽ thoát ngay lập tức và kill theo toàn bộ thread nền vừa tạo
+# (=> job không bao giờ được xử lý dù không có lỗi/exception nào).
+Signal.trap("INT") do
+  puts "\nStopping Solid Queue worker..."
+  worker.stop
+  exit
+end
+
+sleep
