@@ -1,9 +1,18 @@
 Rails.application.routes.draw do
   root "articles#index"
 
-  resources :articles, only: [ :index, :show, :new, :create, :edit, :update ] do
+  resources :articles, only: [ :index, :show, :new, :create, :edit, :update, :destroy ] do
     member do
       post :publish
+      patch :autosave
+    end
+  end
+
+  resource :dashboard, only: :show, controller: :dashboard
+
+  namespace :api do
+    namespace :v1 do
+      resources :articles, only: [ :index ]
     end
   end
 

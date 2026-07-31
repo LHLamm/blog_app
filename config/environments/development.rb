@@ -19,6 +19,10 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :letter_opener
 
+  # Đẩy background job (vd: email thông báo sau khi publish) qua Solid Queue
+  # thay vì :async, để job được lưu bền trong DB và chạy bằng `bin/jobs`.
+  config.active_job.queue_adapter = :solid_queue
+
   # Enable/disable Action Controller caching. By default Action Controller caching is disabled.
   # Run rails dev:cache to toggle Action Controller caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?

@@ -9,6 +9,12 @@
   </div>
 </div>
 
+<% if @article.cover_image.attached? %>
+  <div class="article-cover">
+    <%= image_tag @article.cover_image.variant(resize_to_limit: [ 900, 500 ]), alt: @article.title %>
+  </div>
+<% end %>
+
 <% if policy(@article).edit? %>
   <%= link_to "Edit article", edit_article_path(@article), class: "btn btn--ghost" %>
 <% end %>

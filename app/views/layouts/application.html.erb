@@ -6,6 +6,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", media: "all" %>
+    <%= javascript_importmap_tags %>
   </head>
 
   <body>
@@ -17,6 +18,9 @@
 
           <% if logged_in? %>
             <%= link_to "New article", new_article_path %>
+            <% if current_user.admin? %>
+              <%= link_to "Dashboard", dashboard_path %>
+            <% end %>
             <%= link_to current_user.name, user_path(current_user) %>
             <%= button_to "Log out", logout_path, method: :delete, class: "btn btn--ghost" %>
           <% else %>
@@ -29,10 +33,10 @@
 
     <main class="container">
       <% if notice %>
-        <div class="flash flash--notice"><%= notice %></div>
+        <div class="flash flash--notice" data-controller="flash"><%= notice %></div>
       <% end %>
       <% if alert %>
-        <div class="flash flash--alert"><%= alert %></div>
+        <div class="flash flash--alert" data-controller="flash"><%= alert %></div>
       <% end %>
 
       <%= yield %>

@@ -1,0 +1,8 @@
+<h1>Admin Dashboard</h1>
+<p class="form-hint">New articles from Writers appear below automatically, no refresh needed.</p>
+
+<%= turbo_stream_from :admin_dashboard %>
+
+<div id="articles_list" class="article-list">
+  <%= render partial: "articles/article_row", collection: @articles, as: :article %>
+</div>
