@@ -19,11 +19,12 @@ export default class extends Controller {
   }
 
   async save() {
-    const body = new FormData()
+    const form = this.element.closest("form")
+    if (!form) return
 
-    this.fieldTargets.forEach((field) => {
-      body.append(`article[${field.name.replace(/^article\[|\]$/g, "")}]`, field.value)
-    })
+    const body = new FormData(form)
+
+    body.delete("article[cover_image]")
 
     this.setStatus("Saving…")
 

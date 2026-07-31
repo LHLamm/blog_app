@@ -1,28 +1,34 @@
 #!/usr/bin/env ruby
-# Chay Solid Queue Worker truc tiep, KHONG qua Supervisor.
+# Chay Solid Queue Worker + Dispatcher truc tiep, KHONG qua Supervisor.
 # Supervisor (dung boi bin/jobs) can fork() + trap SIGQUIT, khong co tren Windows.
-# Worker chay don tien trinh, khong fork, khong trap SIGQUIT -> chay duoc tren Windows.
+# Worker/Dispatcher chay don tien trinh, khong fork, khong trap SIGQUIT -> chay duoc tren Windows.
+#
+# Solid Queue co 3 tien trinh rieng biet: Supervisor (quan ly), Dispatcher
+# (chuyen job tu scheduled_executions/jobs sang ready_executions), va Worker
+# (thuc thi job trong ready_executions). Script nay phai chay ca hai: neu chi
+# chay Worker, bat ky job nao dung wait:, wait_until:, hoac recurring task se
+# khong bao gio chay vi khong co Dispatcher poll va chuyen job.
 #
 # Dung: ruby bin/jobs_worker
 
 require_relative "../config/environment"
 
-puts "Starting Solid Queue worker (Windows-friendly, no supervisor)..."
+puts "Starting Solid Queue worker + dispatcher (Windows-friendly, no supervisor)..."
 
-worker = SolidQueue::Worker.new(
-  queues: "*",
-  threads: 3,
-  polling_interval: 1
-)
+worker = SolidQueue::Worker.new(queues: "*", threads: 3, polling_interval: 1)
+dispatcher = SolidQueue::Dispatcher.new(polling_interval: 1, batch_size: 500)
+
 worker.start
+dispatcher.start
 
-# Worker#start chỉ khởi động các thread polling nền và trả về ngay,
-# không tự block main thread. Nếu không giữ process sống ở đây,
+# Worker#start / Dispatcher#start chỉ khởi động các thread polling nền và trả
+# về ngay, không tự block main thread. Nếu không giữ process sống ở đây,
 # Ruby sẽ thoát ngay lập tức và kill theo toàn bộ thread nền vừa tạo
 # (=> job không bao giờ được xử lý dù không có lỗi/exception nào).
 Signal.trap("INT") do
-  puts "\nStopping Solid Queue worker..."
+  puts "\nStopping Solid Queue processes..."
   worker.stop
+  dispatcher.stop
   exit
 end
 

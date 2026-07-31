@@ -69,7 +69,7 @@ class ArticlesController < ApplicationController
   def autosave
     authorize @article, :update?
 
-    if @article.update(article_params)
+    if @article.update(autosave_params)
       render json: { status: "saved", saved_at: @article.updated_at.strftime("%H:%M:%S") }
     else
       render json: { status: "error", errors: @article.errors.full_messages }, status: :unprocessable_entity
@@ -92,5 +92,9 @@ class ArticlesController < ApplicationController
 
   def article_params
     params.require(:article).permit(:title, :body, :cover_image)
+  end
+
+  def autosave_params
+    params.require(:article).permit(:title, :body)
   end
 end

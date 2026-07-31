@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "dashboard", to: "dashboard#index"
+  resource :dashboard, only: :show, controller: :dashboard
 
   namespace :api do
     namespace :v1 do

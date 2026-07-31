@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
   before_action :require_login
   before_action :require_admin
 
-  def index
+  def show
     @articles = Article.includes(:author).order(created_at: :desc).limit(20)
   end
 

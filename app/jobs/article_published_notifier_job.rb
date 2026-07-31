@@ -5,6 +5,6 @@ class ArticlePublishedNotifierJob < ApplicationJob
     article = Article.find_by(id: article_id)
     return if article.nil? || !article.published?
 
-    UserMailer.article_published(article).deliver_now
+    UserMailer.article_published(article).deliver_later
   end
 end

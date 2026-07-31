@@ -9,6 +9,23 @@ class Article < ApplicationRecord
   validates :title, presence: true
   validates :body, presence: true
 
-  after_create_commit -> { broadcast_prepend_to :admin_dashboard, target: "articles_list", partial: "articles/article_row", locals: { article: self } }
-  after_destroy_commit -> { broadcast_remove_to :admin_dashboard }
+  after_create_commit :broadcast_to_admin_dashboard
+  after_destroy_commit :broadcast_remove_from_admin_dashboard
+
+  private
+
+  def broadcast_to_admin_dashboard
+    self.class.includes(:author).find(id).tap do |article_with_author|
+      broadcast_prepend_to(
+        :admin_dashboard,
+        target: "articles_list",
+        partial: "articles/article_row",
+        locals: { article: article_with_author }
+      )
+    end
+  end
+
+  def broadcast_remove_from_admin_dashboard
+    broadcast_remove_to :admin_dashboard
+  end
 end

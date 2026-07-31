@@ -23,7 +23,7 @@ module Api
       def valid_token?(provided_token)
         expected_token = expected_bearer_token
         return false if expected_token.blank?
-        return false unless provided_token.bytesize == expected_token.bytesize
+
         ActiveSupport::SecurityUtils.secure_compare(provided_token, expected_token)
       end
 
